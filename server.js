@@ -59,14 +59,14 @@ app.use('/qrcodes', express.static(QR_CODE_DIR, {
 const generateQRCode = async (advisorId) => {
     try {
         const qrCodePath = path.join(QR_CODE_DIR, `${advisorId}.png`);
-        const qrCodeURL = `http://${LOCAL_IP}:${PORT}/feedback/${advisorId}`;
+        const qrCodeURL = `https://qr-feedback-system-backend.onrender.com/feedback/${advisorId}`;
 
         if (!fs.existsSync(qrCodePath)) {
             await QRCode.toFile(qrCodePath, qrCodeURL);
         }
 
         console.log(`✅ QR Code Generated for Advisor ${advisorId}: ${qrCodeURL}`);
-        return `http://${LOCAL_IP}:${PORT}/qrcodes/${advisorId}.png`;
+        return `https://qr-feedback-system-backend.onrender.com/qrcodes/${advisorId}.png`;
     } catch (error) {
         console.error("❌ Error generating QR Code:", error);
         return null;

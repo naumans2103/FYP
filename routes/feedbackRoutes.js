@@ -5,17 +5,17 @@ const Advisor = require('../models/Advisor');
 
 const router = express.Router();
 
-// ✅ Middleware to parse form data correctly
+// Middleware to parse form data correctly
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-// ✅ Serve the Feedback Form When Scanned
+// Serve the Feedback Form When Scanned
 router.get('/:advisorId', async (req, res) => {
     try {
         const advisor = await Advisor.findById(req.params.advisorId);
-        if (!advisor) return res.status(404).send('❌ Advisor not found');
+        if (!advisor) return res.status(404).send('Advisor not found');
 
-        // ✅ Render a simple HTML form for feedback submission
+        // Render a simple HTML form for feedback submission
         res.send(`
             <!DOCTYPE html>
             <html lang="en">
@@ -51,40 +51,40 @@ router.get('/:advisorId', async (req, res) => {
             </html>
         `);
     } catch (error) {
-        console.error("❌ Error loading feedback form:", error);
-        res.status(500).send('❌ Server Error');
+        console.error("Error loading feedback form:", error);
+        res.status(500).send('Server Error');
     }
 });
 
-// ✅ Handle Feedback Submission (POST Request)
+// Handle Feedback Submission (POST Request)
 router.post('/submit/:advisorId', async (req, res) => {
     try {
         const { advisorId } = req.params;
         const { rating, comment } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(advisorId)) {
-            return res.status(400).json({ message: '❌ Invalid Advisor ID format' });
+            return res.status(400).json({ message: 'Invalid Advisor ID format' });
         }
 
         const advisor = await Advisor.findById(advisorId);
         if (!advisor) {
-            return res.status(404).json({ message: '❌ Advisor not found' });
+            return res.status(404).json({ message: 'Advisor not found' });
         }
 
-        // ✅ Ensure rating is valid
+        // Ensure rating is valid
         const parsedRating = parseInt(rating, 10);
         if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
-            return res.status(400).json({ message: '❌ Rating is required and must be between 1 and 5' });
+            return res.status(400).json({ message: 'Rating is required and must be between 1 and 5' });
         }
 
-        // ✅ Save Feedback Data
+        // Save Feedback Data
         const newFeedback = {
             date: new Date(),
-            rating: parsedRating, // ✅ Ensure rating is stored as a number
-            comments: comment || '', // ✅ Store comment if available
+            rating: parsedRating, // Ensure rating is stored as a number
+            comments: comment || '', // Store comment if available
         };
 
-        // ✅ Ensure feedback array exists before pushing
+        // Ensure feedback array exists before pushing
         if (!Array.isArray(advisor.performanceData)) {
             advisor.performanceData = [];
         }
@@ -92,15 +92,15 @@ router.post('/submit/:advisorId', async (req, res) => {
         advisor.performanceData.push(newFeedback);
         await advisor.save();
 
-        console.log("✅ Feedback submitted successfully");
+        console.log("Feedback submitted successfully");
 
         res.send(`
-            <h3>✅ Thank You for Your Feedback!</h3>
+            <h3>Thank You for Your Feedback!</h3>
             <p>Your response has been recorded successfully.</p>
         `);
     } catch (error) {
-        console.error('❌ Feedback Submission Error:', error);
-        res.status(500).json({ message: '❌ Error submitting feedback', error });
+        console.error('Feedback Submission Error:', error);
+        res.status(500).json({ message: 'Error submitting feedback', error });
     }
 });
 

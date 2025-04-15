@@ -4,7 +4,7 @@ const AdvisorSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['advisor', 'manager'], default: 'advisor' }, // ✅ ADD THIS
+    role: { type: String, enum: ['advisor', 'manager'], default: 'advisor' }, 
     qrCode: { type: String },  
     performanceData: [{
         date: { type: Date, default: Date.now },
